@@ -9,8 +9,15 @@ const { ENVIRONMENT } = require('./utils/constants');
 const dbConfig = require('./utils/db-config');
 
 const quotesRouter = require('./routes/quotes');
-
+const dailyQuoteRouter = require('./routes/daily-quote');
 let dbConnection = `${dbConfig.connection}://${dbConfig.dbUser}:${dbConfig.dbPassword}@${dbConfig.cluster}/${dbConfig.dbName}?retryWrites=true&w=majority`;
+if(dbConfig.runlocal)
+{
+  dbConnection = `${dbConfig.connection}://${dbConfig.cluster}/${dbConfig.dbName}?retryWrites=true&w=majority`;
+}
+//Log connection
+console.log(dbConnection);
+//Connecto to DB
 mongoose.connect(
   dbConnection,
   {
@@ -23,7 +30,7 @@ mongoose.Promise = global.Promise;
 // creating the express app to expose endpoints
 const app = express();
 
-// Logging for development environment 
+// Logging for development environment
 app.use(morgan(ENVIRONMENT.DEV));
 
 // casting the body f the request to Json
@@ -37,6 +44,7 @@ app.use((req, res, next) => {
 
 // Routes which should handle requests
 app.use("/quotes", quotesRouter);
+app.use("/dailyQuote", dailyQuoteRouter);
 
 
 //  Handling http not found generally

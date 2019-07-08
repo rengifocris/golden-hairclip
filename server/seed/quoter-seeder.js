@@ -1,13 +1,21 @@
 const mongoose = require('mongoose');
-
+const dbConfig = require('../utils/db-config');
 const Quote = require('../models/quote');
 const quoteData = require('../../frases.json');
 
 var data = [];
 data = quoteData;
 
+let dbConnection = `${dbConfig.connection}://${dbConfig.dbUser}:${dbConfig.dbPassword}@${dbConfig.cluster}/${dbConfig.dbName}?retryWrites=true&w=majority`;
+if(dbConfig.runlocal)
+{
+  dbConnection = `${dbConfig.connection}://${dbConfig.cluster}/${dbConfig.dbName}?retryWrites=true&w=majority`;
+}
+//Log connection
+console.log(dbConnection);
+//Connecto to DB
 mongoose.connect(
-    "mongodb+srv://node-shop:node-shop@cluster0-7ppfr.mongodb.net/test?retryWrites=true&w=majority",
+    dbConnection,
     {
         useNewUrlParser: true,
         poolSize: 100
