@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
 const errorMiddleware = require('./middleware/error');
 const crossOriginMiddleware = require('./middleware/cross-origin');
 const { ENVIRONMENT } = require('./utils/constants');
@@ -45,6 +44,7 @@ app.use((req, res, next) => {
 // Routes which should handle requests
 app.use("/quotes", quotesRouter);
 app.use("/dailyQuote", dailyQuoteRouter);
+
 
 
 //  Handling http not found generally
