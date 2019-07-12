@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 const Quote = require("../models/quote");
 const DailyQuote = require("../models/daily-quote");
 
+/**
+ * Fiction to get all the quotes
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const quotes_get_all = async (req, res, next) => {
 
   try {
@@ -17,13 +23,42 @@ const quotes_get_all = async (req, res, next) => {
 
 };
 
-const quotes_get_daily_quote = async (req, res, next) => {
+const quotes_get_all_filtered = async (req, res, next) => {
+
   try {
-    let today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let dailyQuote = await DailyQuote.findOne({'validDate': date}).exec();
-     console.log(dailyQuote);
-    res.status(200).json(dailyQuote);
+    let quotes = await Quote.find().exec();
+     console.log(quotes);
+    res.status(200).json(quotes);
+  } catch (e) {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  }
+
+};
+
+/**
+ * Function to get the quotes paginated, it is necesary the page and the limit into the request
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+const quotes_get_paginated = async (req, res, next) => {
+
+  let page = parseInt(req.params.page) || 0; //for next page pass 1 here
+  let limit = parseInt(req.params.limit) || 10;
+  let toSkip = page * limit;
+  try {
+    let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
+
+     console.log(quotes);
+    res.status(200).json({
+      data: quotes,
+      limit: limit,
+      page: page,
+      paginationSize: quotes.length,
+    });
   } catch (e) {
     console.log(err);
     res.status(500).json({
@@ -32,7 +67,24 @@ const quotes_get_daily_quote = async (req, res, next) => {
   }
 };
 
+const quotes_get_daily_quote = async (req, res, next) => {
+
+  try {
+    let today = new Date();
+    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let dailyQuote = await DailyQuote.findOne({'validDate': date}).exec();
+     console.log(dailyQuote);
+    res.status(200).json(dailyQuote);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      error: e
+    });
+  }
+};
+
 const update_quotes = async (req, res, next) => {
+
   try {
     console.log(req);
     //Create daily quote for today date
@@ -43,21 +95,19 @@ const update_quotes = async (req, res, next) => {
        quote: req.body.quote,
        date: req.body.date
    });
-   quote.save(function(err, result) {
-       if (err) {
-           console.log(err);
-       } else {
-           console.log(result);
-           res.status(200).json(quote);
-       }
-   });
+
+   let newQuote = await quote.save();
+   res.status(200).json(newQuote);
+
   } catch (e) {
-    console.log(err);
+    console.log(e);
     res.status(500).json({
-      error: err
+      error: e
     });
   }
 };
+
+
 const delete_quotes = (req,res, next) => {
   const id=req.query.id;
   console.log(req.query.id);
@@ -76,6 +126,7 @@ const delete_quotes = (req,res, next) => {
     res.status(200).send({"success":false,data:"please provide correct Id"});
   }
 };
+
 const delete_quotes2 = (req,res, next) => {
   Quote.findByIdAndRemove(req.params.id, (err, tasks) => {
     if (err) return res.status(500).send(err);
@@ -98,5 +149,6 @@ module.exports = {
   quotes_get_daily_quote,
   update_quotes,
   delete_quotes,
+  quotes_get_paginated,
   quotes_test
 };
