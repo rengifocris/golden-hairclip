@@ -4,9 +4,9 @@ const DailyQuote = require("../models/daily-quote");
 
 /**
  * Function to get all the quotes
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 const quotes_get_all = async (req, res, next) => {
 
@@ -40,9 +40,9 @@ const quotes_get_all_filtered = async (req, res, next) => {
 
 /**
  * Function to get the quotes paginated, it is necesary the page and the limit into the request
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 const quotes_get_paginated = async (req, res, next) => {
 
@@ -50,6 +50,7 @@ const quotes_get_paginated = async (req, res, next) => {
   let limit = parseInt(req.params.limit) || 10;
   let toSkip = page * limit;
   try {
+    let allQuotes = await Quote.find().exec();
     let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
 
     console.log(quotes);
@@ -58,11 +59,32 @@ const quotes_get_paginated = async (req, res, next) => {
       limit: limit,
       page: page,
       paginationSize: quotes.length,
+      totalPages: allQuotes.length,
     });
-  } catch (e) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({
       error: err
+    });
+  }
+};
+
+const quotes_get_by_id = async (req, res, next) => {
+  try {
+    const id = req.params.quoteId;
+    console.log(id);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      let selectedQuote = await Quote.findOne({ '_id' : id }).exec();
+      console.log(selectedQuote);
+      res.status(200).json(selectedQuote);
+    }
+    else {
+      res.status(200).send({ "success": false, data: "please provide correct Id" });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      error: e
     });
   }
 };
@@ -150,5 +172,6 @@ module.exports = {
   update_quotes,
   delete_quotes,
   quotes_get_paginated,
-  quotes_test
+  quotes_test,
+  quotes_get_by_id
 };

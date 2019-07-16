@@ -4,8 +4,11 @@ const express = require("express");
 const QuotesController = require('../controllers/quotes.controller')
 const router = express.Router();
 
-// get all the data 
+// get all the data
 router.get("/", QuotesController.quotes_get_all);
+
+// get data by id
+router.get("/:quoteId", QuotesController.quotes_get_by_id);
 
 // get data paginated
 router.get("/:page/:limit", QuotesController.quotes_get_paginated);

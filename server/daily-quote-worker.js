@@ -60,7 +60,7 @@ workers.setDailyQuote =  async () => {
   workers.loop = function(){
     setInterval(function(){
         workers.setDailyQuote();
-    }, 1 * 24 * 60 * 60 * 1000); // days * 24 * 60 * 60 * 1000
+    }, 20 * 60 * 1000); // days * 24 * 60 * 60 * 1000
   };
 
   //Init function
