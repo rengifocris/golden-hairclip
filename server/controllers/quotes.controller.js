@@ -48,7 +48,7 @@ const quotes_get_paginated = async (req, res, next) => {
 
   let page = parseInt(req.params.page) || 0; //for next page pass 1 here
   let limit = parseInt(req.params.limit) || 10;
-  let toSkip = page * limit;
+  let toSkip = (page - 1) * limit;
   try {
     let allQuotes = await Quote.find().exec();
     let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
