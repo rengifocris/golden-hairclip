@@ -10,6 +10,9 @@ router.get("/", QuotesController.quotes_get_all);
 // get data by id
 router.get("/:quoteId", QuotesController.quotes_get_by_id);
 
+// get data slice
+router.get("/:current/:limit", QuotesController.quotes_get_slice);
+
 // get data paginated
 router.get("/:page/:limit", QuotesController.quotes_get_paginated);
 

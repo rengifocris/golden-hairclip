@@ -69,6 +69,31 @@ const quotes_get_paginated = async (req, res, next) => {
   }
 };
 
+const quotes_get_slice = async (req, res, next) => {
+
+  console.log(req.params);
+  let toSkip = parseInt(req.params.current) || 0; //for next page pass 1 here
+  let limit = parseInt(req.params.limit) || 10;
+  try {
+    let allQuotes = await Quote.find().exec();
+    let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
+
+    // console.log(quotes);
+    res.status(200).json({
+      data: quotes,
+      limit: limit,
+      current: toSkip,
+      sliceSize: quotes.length,
+      totalItems: allQuotes.length,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  }
+};
+
 const quotes_get_by_id = async (req, res, next) => {
   try {
     const id = req.params.quoteId;
@@ -172,6 +197,7 @@ module.exports = {
   update_quotes,
   delete_quotes,
   quotes_get_paginated,
+  quotes_get_slice,
   quotes_test,
   quotes_get_by_id
 };
