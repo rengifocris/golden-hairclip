@@ -76,7 +76,18 @@ const quotes_get_slice = async (req, res, next) => {
   let limit = parseInt(req.params.limit) || 10;
   try {
     let allQuotes = await Quote.find().exec();
-    let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
+    let quotes =[];
+    if(req.params.sortby=='Newest')
+    {
+      console.log('Quotes will be sorted');
+      quotes = await Quote.find().sort({date: 'desc'}).skip(toSkip).limit(limit).exec();
+    }
+    else
+    {
+
+      //let quotes = await Quote.find().skip(toSkip).limit(limit).exec();
+      quotes = await Quote.find({}).sort({date: 'asc'}).skip(toSkip).limit(limit).exec();
+    }
 
     // console.log(quotes);
     res.status(200).json({
