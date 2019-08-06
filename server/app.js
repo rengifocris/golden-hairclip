@@ -10,6 +10,7 @@ const dbConfig = require('./utils/db-config');
 const quotesRouter = require('./routes/quotes');
 const dailyQuoteRouter = require('./routes/daily-quote');
 const commentRouter = require('./routes/comments');
+const authorsRouter = require('./routes/authors');
 
 let dbConnection = `${dbConfig.connection}://${dbConfig.dbUser}:${dbConfig.dbPassword}@${dbConfig.cluster}/${dbConfig.dbName}?retryWrites=true&w=majority`;
 if(dbConfig.runlocal)
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 app.use("/quotes", quotesRouter);
 app.use("/dailyQuote", dailyQuoteRouter);
 app.use("/comments", commentRouter);
+app.use("/authors", authorsRouter);
 
 
 //  Handling http not found generally
