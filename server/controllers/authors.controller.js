@@ -10,7 +10,7 @@ const Author = require("../models/author");
 const authors_get_all = async (req, res, next) => {
 
     try {
-        let comments = await Author.find().exec();
+        let comments = await Author.find().sort({authorName: 'asc'}).exec();
         console.log(comments);
         res.status(200).json(comments);
     } catch (e) {
