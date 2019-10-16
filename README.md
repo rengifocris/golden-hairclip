@@ -1,5 +1,8 @@
-The golden hairclip for Omnicon's international team 
+# About
 
-At the momment we are building the backend.
+Back end API on Node JS using Express and Mongoose for a simple Quotes App.
 
-In progress... :)
+# Authors
+
+Johan Porras
+Cristian Rengifo
